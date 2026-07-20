@@ -1,1 +1,105 @@
-# -
+# -<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>모바일 주민등록증</title>
+    <style>
+        body {
+            background-color: #f0f2f5;
+            font-family: 'Malgun Gothic', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        /* 모바일 신분증 카드 스타일 */
+        .id-card {
+            background: linear-gradient(135deg, #e0f2fe, #fbcfe8);
+            width: 330px;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
+            position: relative;
+        }
+        .card-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #334155;
+            margin-bottom: 20px;
+        }
+        /* 증명사진 영역 */
+        .photo-area {
+            width: 130px;
+            height: 160px;
+            background-color: #cbd5e1;
+            margin: 0 auto 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #64748b;
+            font-size: 14px;
+        }
+        .photo-area img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        /* 개인 정보 영역 */
+        .info-area {
+            color: #1e293b;
+            margin-bottom: 25px;
+        }
+        .name {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .resident-number {
+            font-size: 16px;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            color: #475569;
+        }
+        .address {
+            font-size: 14px;
+            color: #64748b;
+            line-height: 1.4;
+        }
+        /* 하단 로고 및 기관 */
+        .footer-area {
+            font-size: 16px;
+            font-weight: bold;
+            color: #475569;
+            border-top: 1px solid rgba(0,0,0,0.05);
+            padding-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="id-card">
+        <div class="card-title">주민등록증</div>
+        
+        <!-- 본인의 증명사진 이미지 파일이 있다면 img 태그를 활용하세요 -->
+        <div class="photo-area">
+            <span>증명사진</span>
+        </div>
+        
+        <div class="info-area">
+            <div class="name">홍 길 동</div>
+            <div class="resident-number">030101-3xxxxxx</div>
+            <div class="address">서울특별시 중구 세종대로 110<br>(태평로1가)</div>
+        </div>
+        
+        <div class="footer-area">
+            행 정 안 전 부
+        </div>
+    </div>
+
+</body>
+</html>
