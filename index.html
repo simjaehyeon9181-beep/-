@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>모바일 카드</title>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+  <style>
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html,body{margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;background:#efefef;color:#111}
+    body{min-height:100vh}
+    .hidden{display:none !important}
+    .screen{min-height:100vh;width:100%}
+
+    /* HOME */
+    .home{
+      min-height:100vh;
+      background:#f2f3f7;
+      display:flex;
+      flex-direction:column;
+    }
+    .home-header{
+      background:#fff;
+      padding:18px 16px 14px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      border-bottom:1px solid #ececec;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-size:24px;
+      font-weight:900;
+      letter-spacing:-0.5px;
+    }
+    .brand-logo{
+      width:34px;height:34px;border-radius:50%;
+      background:conic-gradient(from 180deg,#0b4bb3 0 48%,#d53a3a 48% 76%,#ffffff 76% 100%);
+      border:2px solid #111;
+      flex-shrink:0;
+    }
+    .header-actions{display:flex;gap:18px}
+    .head-btn{
+      border:0;background:transparent;padding:0;
+      display:flex;flex-direction:column;align-items:center;gap:3px;
+      font-size:11px;font-weight:800;color:#111;
+    }
+    .user-icon,.menu-icon,.search-icon{position:relative}
+    .user-icon{width:24px;height:24px}
+    .user-icon:before,.user-icon:after{
+      content:"";position:absolute;left:50%;transform:translateX(-50%);
+      border:2px solid #111;border-radius:50%;
+    }
+    .user-icon:before{top:1px;width:10px;height:10px}
+    .user-icon:after{
+      bottom:1px;width:18px;height:9px;border-bottom:0;
+      border-top-left-radius:20px;border-top-right-radius:20px;
+    }
+    .menu-icon{width:24px;height:24px}
+    .menu-icon span{
+      position:absolute;left:0;right:0;height:3px;background:#111;border-radius:999px;
+    }
+    .menu-icon span:nth-child(1){top:2px}
+    .menu-icon span:nth-child(2){top:10px}
+    .menu-icon span:nth-child(3){top:18px}
+    .home-main{padding:18px 16px 100px}
+    .search-box{
+      background:#fff;
+      border:3px solid #2a4da0;
+      min-height:66px;
+      border-radius:999px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:0 18px;
+      font-size:18px;
+      font-weight:800;
+      box-shadow:0 6px 16px rgba(42,77,160,.08);
+    }
+    .search-icon{
+      width:24px;height:24px;border:3px solid #111;border-radius:50%;
+    }
+    .search-icon:after{
+      content:"";position:absolute;width:10px;height:3px;background:#111;border-radius:999px;
+      right:-7px;bottom:-2px;transform:rotate(45deg);
+    }
+    .section-title{
+      margin:28px 0 14px;
+      font-size:24px;
+      font-weight:900;
+      letter-spacing:-0.7px;
+    }
+    .service-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
+    .service-card{
+      background:#fff;
+      border-radius:16px;
+      min-height:78px;
+      padding:16px;
+      font-size:17px;
+      font-weight:900;
+      box-shadow:0 4px 12px rgba(0,0,0,.04);
+    }
+    .bottom-nav{
+      position:fixed;
+      left:0;right:0;bottom:0;
+      background:rgba(255,255,255,.97);
+      border-top:1px solid #e8e8e8;
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      padding:12px 8px 18px;
+    }
+    .nav-item{
+      text-align:center;
+      font-size:13px;
+      font-weight:800;
+    }
+
+    /* LOGIN */
+    .login-screen{
+      min-height:100vh;
+      background:rgba(255,255,255,.88);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+    }
+    .login-panel{
+      width:min(92vw,380px);
+      text-align:center;
+    }
+    .login-logo{
+      width:72px;height:72px;margin:0 auto 18px;
+      border-radius:8px;
+      background:conic-gradient(from 180deg,#0b4bb3 0 48%,#d53a3a 48% 76%,#ffffff 76% 100%);
+      border:2px solid #111;
+    }
+    .login-title{
+      margin:0 0 24px;
+      font-size:32px;
+      font-weight:900;
+    }
+    .field-label{
+      display:block;
+      text-align:left;
+      font-size:18px;
+      font-weight:900;
+      margin:16px 0 8px;
+    }
+    .field{
+      width:100%;
+      height:56px;
+      border-radius:12px;
+      border:1.5px solid #d9d9d9;
+      background:#fff;
+      padding:0 16px;
+      font-size:18px;
+      outline:none;
+    }
+    .primary-btn{
+      width:100%;
+      height:58px;
+      border:0;
+      border-radius:16px;
+      background:linear-gradient(90deg,#2f71ff,#255feb);
+      color:#fff;
+      font-size:26px;
+      font-weight:900;
+      margin-top:22px;
+    }
+    .text-btn{
+      width:100%;
+      border:0;
+      background:transparent;
+      font-size:20px;
+      font-weight:800;
+      margin-top:12px;
+      padding:10px 0;
+    }
+
+    /* CARD */
+    .card-screen{
+      min-height:100vh;
+      background:#efefef;
+    }
+    .card-header{
+      background:#fff;
+      padding:10px 14px 12px;
+      display:grid;
+      grid-template-columns:44px 1fr 44px;
+      align-items:center;
+    }
+    .icon-btn{
+      width:44px;height:44px;border:0;background:transparent;position:relative;padding:0;
+    }
+    .back-btn:before{
+      content:"";
+      position:absolute;
+      left:14px;top:12px;
+      width:14px;height:14px;
+      border-left:4px solid #111;
+      border-bottom:4px solid #111;
+      transform:rotate(45deg);
+    }
+    .card-title{
+      text-align:center;
+      font-size:24px;
+      font-weight:900;
+    }
+    .tab-row{
+      display:flex;
+      background:#fff;
+      border-bottom:1px solid #ddd;
+    }
+    .tab{
+      flex:1;
+      text-align:center;
+      padding:14px 8px 16px;
+      font-size:18px;
+      font-weight:900;
+      color:#aaa;
+      position:relative;
+    }
+    .tab.active{color:#111}
+    .tab.active:after{
+      content:"";
+      position:absolute;
+      left:50%;
+      transform:translateX(-50%);
+      bottom:0;
+      width:52%;
+      height:5px;
+      border-radius:999px;
+      background:#222;
+    }
+    .card-main{padding:16px}
+    .card-panel{
+      background:#fff;
+      border-radius:28px;
+      box-shadow:0 12px 30px rgba(0,0,0,.1);
+      padding:22px 18px 0;
+      overflow:hidden;
+    }
+    .photo-wrap{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      min-height:250px;
+    }
+    .photo-wrap img{
+      width:220px;
+      height:220px;
+      object-fit:cover;
+      background:#f0f0f0;
+      border:none;
+    }
+    .info-row{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-end;
+      gap:14px;
+    }
+    .text-col{
+      flex:1;
+      min-width:0;
+    }
+    .name-text{
+      font-size:30px;
+      font-weight:900;
+      margin-bottom:16px;
+    }
+    .birth-text{
+      font-size:22px;
+      font-weight:900;
+      margin-bottom:10px;
+    }
+    .addr-text{
+      font-size:18px;
+      font-weight:900;
+      line-height:1.3;
+      word-break:keep-all;
+    }
+    .issue-text{
+      margin-top:12px;
+      font-size:18px;
+      font-weight:900;
+    }
+    .toggle-row{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      margin-top:14px;
+      font-size:15px;
+      font-weight:800;
+      color:#444;
+    }
+    .toggle-row input{
+      width:18px;height:18px;
+    }
+    .qr-wrap{
+      width:150px;
+      height:150px;
+      flex-shrink:0;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      background:#fff;
+    }
+    #qrCanvas{
+      width:150px !important;
+      height:150px !important;
+      display:block;
+      background:#fff;
+    }
+    .timer-area{
+      margin-top:28px;
+      padding-bottom:18px;
+    }
+    .progress-track{
+      width:100%;
+      height:12px;
+      border-radius:999px;
+      background:#d3d3d3;
+      overflow:hidden;
+    }
+    .progress-bar{
+      width:100%;
+      height:100%;
+      background:linear-gradient(90deg,#7db7ff,#5c6fff,#6632ff);
+      transition:width 1s linear;
+    }
+    .time-label{
+      margin-top:10px;
+      font-size:18px;
+      font-weight:900;
+      color:#b2b2b2;
+    }
+    .time-label span{color:#448cff}
+    .action-row{
+      display:flex;
+      margin:0 -18px;
+    }
+    .bottom-action{
+      width:100%;
+      height:74px;
+      border:0;
+      background:#151515;
+      color:#fff;
+      font-size:22px;
+      font-weight:900;
+    }
+
+    /* SETTINGS */
+    .settings-screen{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.28);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:16px;
+      z-index:9999;
+    }
+    .settings-panel{
+      width:min(92vw,420px);
+      background:#fff;
+      border-radius:24px;
+      padding:22px 18px 18px;
+      max-height:86vh;
+      overflow:auto;
+      box-shadow:0 18px 40px rgba(0,0,0,.18);
+    }
+    .settings-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:8px;
+    }
+    .settings-head h2{
+      margin:0;
+      font-size:28px;
+      font-weight:900;
+    }
+    .sheet-mark{
+      font-size:12px;
+      font-weight:800;
+      color:#666;
+      white-space:nowrap;
+    }
+    .sub-btn{
+      width:100%;
+      height:52px;
+      border:0;
+      border-radius:14px;
+      background:#eef3ff;
+      color:#2f6df6;
+      font-size:17px;
+      font-weight:900;
+      margin-top:14px;
+    }
+    .save-btn{
+      width:100%;
+      height:54px;
+      border:0;
+      border-radius:14px;
+      background:#2f6df6;
+      color:#fff;
+      font-size:18px;
+      font-weight:900;
+      margin-top:14px;
+    }
+
+    @media (max-width:420px){
+      .brand{font-size:20px}
+      .search-box{font-size:16px}
+      .section-title{font-size:20px}
+      .service-card{font-size:15px}
+      .photo-wrap img{width:190px;height:190px}
+      .name-text{font-size:26px}
+      .birth-text{font-size:20px}
+      .addr-text,.issue-text{font-size:16px}
+      .qr-wrap,#qrCanvas{width:130px !important;height:130px !important}
+      .bottom-action{font-size:18px;height:68px}
+    }
+  </style>
+</head>
+<body>
+  <!-- HOME -->
+  <section id="homeScreen" class="screen home">
+    <header class="home-header">
+      <div class="brand">
+        <div class="brand-logo"></div>
+        <div>모바일 서비스</div>
+      </div>
+
+      <div class="header-actions">
+        <button id="loginOpenBtn" class="head-btn" type="button">
+          <div class="user-icon"></div>
+          <span>로그인</span>
+        </button>
+
+        <button class="head-btn" type="button">
+          <div class="menu-icon">
+            <span></span><span></span><span></span>
+          </div>
+          <span>전체메뉴</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="home-main">
+      <div class="search-box">
+        <span>서비스를 쉽게 검색하세요.</span>
+        <div class="search-icon"></div>
+      </div>
+
+      <h2 class="section-title">자주 찾는 서비스</h2>
+
+      <div class="service-grid">
+        <div class="service-card">증명서 발급</div>
+        <div class="service-card">문서 조회</div>
+        <div class="service-card">민원 신청</div>
+        <div class="service-card">QR 확인</div>
+        <div class="service-card">내 정보</div>
+        <div class="service-card">설정</div>
+      </div>
+    </main>
+
+    <nav class="bottom-nav">
+      <div class="nav-item">홈</div>
+      <div class="nav-item">서비스</div>
+      <div class="nav-item">문서</div>
+      <div class="nav-item">내정보</div>
+    </nav>
+  </section>
+
+  <!-- LOGIN -->
+  <section id="loginScreen" class="screen login-screen hidden">
+    <div class="login-panel">
+      <div class="login-logo"></div>
+      <h1 class="login-title">로그인</h1>
+
+      <label class="field-label" for="loginId">아이디</label>
+      <input id="loginId" class="field" type="text" placeholder="아이디를 입력하세요" />
+
+      <label class="field-label" for="loginPw">비밀번호</label>
+      <input id="loginPw" class="field" type="password" placeholder="비밀번호를 입력하세요" />
+
+      <button id="loginSubmitBtn" class="primary-btn" type="button">로그인</button>
+      <button id="loginCloseBtn" class="text-btn" type="button">취소</button>
+    </div>
+  </section>
+
+  <!-- CARD -->
+  <section id="cardScreen" class="screen card-screen hidden">
+    <header class="card-header">
+      <button id="backBtn" class="icon-btn back-btn" type="button"></button>
+      <div class="card-title">모바일신분증</div>
+      <button id="menuTapBtn" class="icon-btn" type="button">
+        <div class="menu-icon">
+          <span></span><span></span><span></span>
+        </div>
+      </button>
+    </header>
+
+    <div class="tab-row">
+      <div class="tab active">주민등록증</div>
+      <div class="tab">운전면허증</div>
+    </div>
+
+    <main class="card-main">
+      <div class="card-panel">
+        <div class="photo-wrap">
+          <img id="profilePhoto" alt="사진" />
+        </div>
+
+        <div class="info-row">
+          <div class="text-col">
+            <div id="nameText" class="name-text">이름</div>
+            <div id="birthText" class="birth-text">07.09.07-*******</div>
+            <div id="addrText" class="addr-text">주소</div>
+            <div id="issueText" class="issue-text">발급일 2026.04.14</div>
+
+            <label id="birthToggleWrap" class="toggle-row">
+              <input id="birthToggle" type="checkbox" />
+              <span>뒷자리 표시</span>
+            </label>
+          </div>
+
+          <div id="qrWrap" class="qr-wrap hidden">
+            <canvas id="qrCanvas"></canvas>
+          </div>
+        </div>
+
+        <div class="timer-area">
+          <div class="progress-track">
+            <div id="progressBar" class="progress-bar"></div>
+          </div>
+          <div class="time-label">남은시간 <span id="timeText">30초</span></div>
+        </div>
+
+        <div class="action-row">
+          <button id="modeBtn" class="bottom-action" type="button">QR정보 표시</button>
+        </div>
+      </div>
+    </main>
+  </section>
+
+  <!-- SETTINGS -->
+  <section id="settingsScreen" class="settings-screen hidden">
+    <div class="settings-panel">
+      <div class="settings-head">
+        <h2>설정</h2>
+        <div class="sheet-mark">이걸만든성현우</div>
+      </div>
+
+      <label class="field-label" for="settingName">이름</label>
+      <input id="settingName" class="field" type="text" />
+
+      <label class="field-label" for="settingBirthFront">생년월일 앞자리</label>
+      <input id="settingBirthFront" class="field" type="text" placeholder="예: 07.09.07" />
+
+      <label class="field-label" for="settingBirthBack">생년월일 뒷자리</label>
+      <input id="settingBirthBack" class="field" type="text" placeholder="예: 1234567" />
+
+      <label class="field-label" for="settingAddr">주소</label>
+      <input id="settingAddr" class="field" type="text" />
+
+      <label class="field-label" for="settingIssue">발급일</label>
+      <input id="settingIssue" class="field" type="text" placeholder="예: 2026.04.14" />
+
+      <input id="photoInput" type="file" accept="image/*" class="hidden" />
+      <button id="pickPhotoBtn" class="sub-btn" type="button">사진 선택</button>
+      <button id="saveBtn" class="save-btn" type="button">저장</button>
+      <button id="closeSettingsBtn" class="sub-btn" type="button">닫기</button>
+    </div>
+  </section>
+
+  <script>
+    const defaultPhoto =
+      "data:image/svg+xml;utf8," +
+      encodeURIComponent(`
+      <svg xmlns="http://www.w3.org/2000/svg" width="500" height="500">
+        <rect width="100%" height="100%" fill="#f1f1f1"/>
+        <circle cx="250" cy="170" r="80" fill="#d8d8d8"/>
+        <rect x="145" y="270" width="210" height="130" rx="55" fill="#d8d8d8"/>
+      </svg>
+    `);
+
+    const storageKey = "mobile_demo_card_v5";
+
+    const state = {
+      mode: "detail",
+      timer: 30,
+      timerId: null,
+      menuTapCount: 0,
+      profile: {
+        name: "성현우",
+        birthFront: "07.09.07",
+        birthBack: "1234567",
+        addr: "전주시 덕진구",
+        issue: "2026.04.14",
+        photo: defaultPhoto
+      }
+    };
+
+    const homeScreen = document.getElementById("homeScreen");
+    const loginScreen = document.getElementById("loginScreen");
+    const cardScreen = document.getElementById("cardScreen");
+    const settingsScreen = document.getElementById("settingsScreen");
+
+    const loginOpenBtn = document.getElementById("loginOpenBtn");
+    const loginCloseBtn = document.getElementById("loginCloseBtn");
+    const loginSubmitBtn = document.getElementById("loginSubmitBtn");
+
+    const backBtn = document.getElementById("backBtn");
+    const menuTapBtn = document.getElementById("menuTapBtn");
+
+    const nameText = document.getElementById("nameText");
+    const birthText = document.getElementById("birthText");
+    const addrText = document.getElementById("addrText");
+    const issueText = document.getElementById("issueText");
+    const profilePhoto = document.getElementById("profilePhoto");
+    const qrWrap = document.getElementById("qrWrap");
+    const qrCanvas = document.getElementById("qrCanvas");
+
+    const birthToggleWrap = document.getElementById("birthToggleWrap");
+    const birthToggle = document.getElementById("birthToggle");
+    const modeBtn = document.getElementById("modeBtn");
+
+    const progressBar = document.getElementById("progressBar");
+    const timeText = document.getElementById("timeText");
+
+    const settingName = document.getElementById("settingName");
+    const settingBirthFront = document.getElementById("settingBirthFront");
+    const settingBirthBack = document.getElementById("settingBirthBack");
+    const settingAddr = document.getElementById("settingAddr");
+    const settingIssue = document.getElementById("settingIssue");
+    const photoInput = document.getElementById("photoInput");
+    const pickPhotoBtn = document.getElementById("pickPhotoBtn");
+    const saveBtn = document.getElementById("saveBtn");
+    const closeSettingsBtn = document.getElementById("closeSettingsBtn");
+
+    function loadProfile() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(storageKey));
+        if (!saved) return;
+        state.profile = {
+          name: saved.name || state.profile.name,
+          birthFront: saved.birthFront || state.profile.birthFront,
+          birthBack: saved.birthBack || state.profile.birthBack,
+          addr: saved.addr || state.profile.addr,
+          issue: saved.issue || state.profile.issue,
+          photo: saved.photo || state.profile.photo
+        };
+      } catch (e) {}
+    }
+
+    function saveProfile() {
+      localStorage.setItem(storageKey, JSON.stringify(state.profile));
+    }
+
+    function qrText() {
+      return [
+        `이름:${state.profile.name}`,
+        `생년월일:${state.profile.birthFront}`,
+        `주소:${state.profile.addr}`
+      ].join("\\n");
+    }
+
+    function renderQR() {
+      qrCanvas.width = 150;
+      qrCanvas.height = 150;
+
+      if (window.QRCode && typeof QRCode.toCanvas === "function") {
+        QRCode.toCanvas(qrCanvas, qrText(), {
+          width: 150,
+          margin: 1,
+          errorCorrectionLevel: "M"
+        });
+      }
+    }
+
+    function renderProfile() {
+      nameText.textContent = state.profile.name;
+      addrText.textContent = state.profile.addr;
+      issueText.textContent = `발급일 ${state.profile.issue}`;
+      profilePhoto.src = state.profile.photo;
+
+      if (state.mode === "detail") {
+        qrWrap.classList.add("hidden");
+        birthToggleWrap.classList.remove("hidden");
+        issueText.classList.remove("hidden");
+        birthText.textContent = birthToggle.checked
+          ? `${state.profile.birthFront}-${state.profile.birthBack}`
+          : `${state.profile.birthFront}-*******`;
+        modeBtn.textContent = "QR정보 표시";
+      } else {
+        qrWrap.classList.remove("hidden");
+        birthToggleWrap.classList.add("hidden");
+        issueText.classList.add("hidden");
+        birthText.textContent = state.profile.birthFront;
+        modeBtn.textContent = "상세정보 표시";
+        renderQR();
+      }
+    }
+
+    function updateTimerUI() {
+      timeText.textContent = `${state.timer}초`;
+      progressBar.style.width = `${(state.timer / 30) * 100}%`;
+    }
+
+    function stopTimer() {
+      if (state.timerId) {
+        clearInterval(state.timerId);
+        state.timerId = null;
+      }
+    }
+
+    function startTimer() {
+      stopTimer();
+      state.timer = 30;
+      updateTimerUI();
+
+      state.timerId = setInterval(() => {
+        state.timer -= 1;
+        if (state.timer < 1) {
+          state.timer = 30;
+        }
+        updateTimerUI();
+      }, 1000);
+    }
+
+    function showHome() {
+      homeScreen.classList.remove("hidden");
+      loginScreen.classList.add("hidden");
+      cardScreen.classList.add("hidden");
+      settingsScreen.classList.add("hidden");
+      stopTimer();
+    }
+
+    function showLogin() {
+      homeScreen.classList.add("hidden");
+      loginScreen.classList.remove("hidden");
+      cardScreen.classList.add("hidden");
+      settingsScreen.classList.add("hidden");
+    }
+
+    function showCard() {
+      homeScreen.classList.add("hidden");
+      loginScreen.classList.add("hidden");
+      cardScreen.classList.remove("hidden");
+      settingsScreen.classList.add("hidden");
+      state.mode = "detail";
+      state.menuTapCount = 0;
+      birthToggle.checked = false;
+      renderProfile();
+      startTimer();
+    }
+
+    function openSettings() {
+      settingName.value = state.profile.name;
+      settingBirthFront.value = state.profile.birthFront;
+      settingBirthBack.value = state.profile.birthBack;
+      settingAddr.value = state.profile.addr;
+      settingIssue.value = state.profile.issue;
+      settingsScreen.classList.remove("hidden");
+    }
+
+    function closeSettings() {
+      settingsScreen.classList.add("hidden");
+      state.menuTapCount = 0;
+    }
+
+    function handleMenuTap() {
+      state.menuTapCount += 1;
+      if (state.menuTapCount >= 5) {
+        openSettings();
+      }
+    }
+
+    function pickPhoto() {
+      photoInput.click();
+    }
+
+    function handlePhotoChange(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        state.profile.photo = e.target.result;
+        profilePhoto.src = state.profile.photo;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function saveSettings() {
+      state.profile.name = settingName.value.trim() || "이름";
+      state.profile.birthFront = settingBirthFront.value.trim() || "07.09.07";
+      state.profile.birthBack = settingBirthBack.value.trim() || "1234567";
+      state.profile.addr = settingAddr.value.trim() || "주소";
+      state.profile.issue = settingIssue.value.trim() || "2026.04.14";
+      saveProfile();
+      renderProfile();
+      closeSettings();
+    }
+
+    loginOpenBtn.addEventListener("click", showLogin);
+    loginCloseBtn.addEventListener("click", showHome);
+    loginSubmitBtn.addEventListener("click", showCard);
+
+    backBtn.addEventListener("click", showHome);
+    menuTapBtn.addEventListener("click", handleMenuTap);
+
+    birthToggle.addEventListener("change", renderProfile);
+
+    modeBtn.addEventListener("click", () => {
+      state.mode = state.mode === "detail" ? "qr" : "detail";
+      renderProfile();
+      startTimer();
+    });
+
+    pickPhotoBtn.addEventListener("click", pickPhoto);
+    photoInput.addEventListener("change", handlePhotoChange);
+    saveBtn.addEventListener("click", saveSettings);
+    closeSettingsBtn.addEventListener("click", closeSettings);
+
+    loadProfile();
+    renderProfile();
+    updateTimerUI();
+    showHome();
+  </script>
+</body>
+</html>
